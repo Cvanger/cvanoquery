@@ -1,6 +1,4 @@
-import { Table } from 'Table';
-import { Equal } from 'operator/EqualOperator';
-import { In } from 'operator/InOperator';
+import { Equal, In, Table } from 'index';
 
 class Test {
     name: string;

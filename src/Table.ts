@@ -1,5 +1,5 @@
 import { MysqlError, Pool } from 'mysql';
-import { AbstractOperator } from 'operator/AbstractOperator';
+import { AbstractOperator } from 'src/operator/AbstractOperator';
 
 type IWhere<T> = { [P in keyof T]?: AbstractOperator };
 type IValues<T> = { [P in keyof T]?: string | number };
@@ -27,18 +27,6 @@ export class Table<T> {
         this.whereCondition = where;
 
         return this;
-    }
-
-    private getWhereQuery() {
-        const w = this.whereCondition ? Object.keys(this.whereCondition).map(key => {
-            return `\`${key}\` ${(this.whereCondition[key] as AbstractOperator).getWhere()}`;
-        }) : [];
-
-        if (w.length > 0) {
-            return ` WHERE ${w.join(" AND ")}`;
-        }
-
-        return '';
     }
 
     public async getFindQuery() {
@@ -113,7 +101,13 @@ export class Table<T> {
         return this.query<T>(query);
     }
 
-    protected async query<S>(sql: string): Promise<S[]> {
+    public async insert(values: Array<IInsert<T>>) {
+        const query = await this.getInsertQuery(values);
+
+        return this.query<T>(query);
+    }
+
+    public async query<S>(sql: string): Promise<S[]> {
         return new Promise((resolve, reject) => {
             this.pool.query(sql, (err: MysqlError | null, results?: any) => {
                 if (err) {
@@ -131,5 +125,17 @@ export class Table<T> {
     private async getTableName() {
         return `${await this.getPrefix()}${this.tableName}`;
 
+    }
+
+    private getWhereQuery() {
+        const w = this.whereCondition ? Object.keys(this.whereCondition).map(key => {
+            return `\`${key}\` ${(this.whereCondition[key] as AbstractOperator).getWhere()}`;
+        }) : [];
+
+        if (w.length > 0) {
+            return ` WHERE ${w.join(" AND ")}`;
+        }
+
+        return '';
     }
 }

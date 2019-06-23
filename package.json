@@ -15,7 +15,7 @@
     "typescript": "^3.5.2"
   },
   "scripts": {
-    "test": "NODE_PATH=./src jest"
+    "test": "NODE_PATH=. jest"
   },
   "devDependencies": {
     "ts-jest": "^24.0.2"

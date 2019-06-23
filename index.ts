@@ -1,3 +1,5 @@
-import { Table } from 'Table';
+import { Table } from './src/Table';
+import { Equal } from './src/operator/EqualOperator';
+import { In } from './src/operator/InOperator';
 
-export { Table };
+export { Table, Equal, In };

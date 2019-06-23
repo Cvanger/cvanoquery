@@ -12,7 +12,7 @@
       "jest",
       "node"
     ],
-    "baseUrl": "src",
-    "rootDir": "src"
+    "baseUrl": ".",
+    "rootDir": "."
   }
 }
