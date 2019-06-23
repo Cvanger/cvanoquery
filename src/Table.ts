@@ -89,6 +89,14 @@ export class Table<T> {
         return this.query(query);
     }
 
+    public async findOne(): Promise<T> {
+        const query = await this.getFindQuery();
+
+        const rows = await this.query<T>(query);
+
+        return rows[0];
+    }
+
     public async update(values: IValues<T>) {
         const query = await this.getUpdateQuery(values);
 
