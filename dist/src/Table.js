@@ -242,6 +242,9 @@ var Table = /** @class */ (function () {
                         if (!_this.pool) {
                             throw new Error('No pool defined');
                         }
+                        if (_this.log) {
+                            console.log(sql);
+                        }
                         _this.pool.query(sql, function (err, results) {
                             if (err) {
                                 throw err;
