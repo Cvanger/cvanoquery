@@ -15,7 +15,8 @@ export class Table<T> {
     protected pool?: Pool;
     private resultLimit?: number;
 
-    constructor() {
+    constructor(pool: Pool) {
+        this.pool = pool;
     }
 
     public select(columns: string[] = ['*']) {
