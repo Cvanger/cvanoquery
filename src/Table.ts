@@ -15,7 +15,7 @@ export class Table<T> {
     protected pool?: Pool;
     private resultLimit?: number;
 
-    constructor(pool: Pool) {
+    public setPool(pool: Pool) {
         this.pool = pool;
     }
 

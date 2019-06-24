@@ -16,7 +16,7 @@ export declare class Table<T> {
     protected log: boolean;
     protected pool?: Pool;
     private resultLimit?;
-    constructor();
+    setPool(pool: Pool): void;
     select(columns?: string[]): this;
     where(where: IWhere<T>): this;
     limit(limit: number): this;

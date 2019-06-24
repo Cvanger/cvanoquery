@@ -42,6 +42,9 @@ var Table = /** @class */ (function () {
         this.whereCondition = {};
         this.log = true;
     }
+    Table.prototype.setPool = function (pool) {
+        this.pool = pool;
+    };
     Table.prototype.select = function (columns) {
         if (columns === void 0) { columns = ['*']; }
         this.columns = columns;
