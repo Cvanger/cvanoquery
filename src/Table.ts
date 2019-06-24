@@ -141,6 +141,9 @@ export class Table<T> {
             if (!this.pool) {
                 throw new Error('No pool defined');
             }
+            if (this.log) {
+                console.log(sql);
+            }
             this.pool.query(sql, (err: MysqlError | null, results?: any) => {
                 if (err) {
                     throw err;
