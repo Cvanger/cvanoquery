@@ -1,5 +1,5 @@
 import { MysqlError, Pool } from 'mysql';
-import { AbstractOperator } from 'src/operator/AbstractOperator';
+import { AbstractOperator } from 'src/operator';
 
 type IWhere<T> = { [P in keyof T]?: AbstractOperator };
 type IValues<T> = { [P in keyof T]?: string | number };
@@ -8,11 +8,12 @@ type IInsert<T> = { [P in keyof T]?: string | number };
 export class Table<T> {
     protected tableName = '';
 
-    private columns: string[];
-    private whereCondition: IWhere<T>;
+    private columns: string[] = ['*'];
+    private whereCondition: IWhere<T> = {};
     protected log = true;
 
-    protected pool: Pool;
+    protected pool?: Pool;
+    private resultLimit?: number;
 
     constructor() {
     }
@@ -23,8 +24,14 @@ export class Table<T> {
         return this;
     }
 
-    public where(where: IWhere<T> = null) {
+    public where(where: IWhere<T>) {
         this.whereCondition = where;
+
+        return this;
+    }
+
+    public limit(limit: number) {
+        this.resultLimit = limit;
 
         return this;
     }
@@ -34,6 +41,7 @@ export class Table<T> {
         let query = `SELECT ${c.join(", ")} FROM \`${await this.getTableName()}\``;
 
         query += this.getWhereQuery();
+        query += this.getLimitQuery();
         query += `;`;
 
         return query;
@@ -60,10 +68,10 @@ export class Table<T> {
     }
 
     public async getInsertQuery(values: Array<IInsert<T>>) {
-        const columns = [];
-        const valuesArray = [];
+        const columns: string[] = [];
+        const valuesArray: string[] = [];
         values.forEach(value => {
-            const values = [];
+            const values: string[] = [];
             Object.keys(value)
                 .forEach(key => {
                     if (!columns.includes(key)) {
@@ -97,6 +105,18 @@ export class Table<T> {
         return rows[0];
     }
 
+    public async findOneOrFail(): Promise<T> {
+        this.limit(1);
+        const query = await this.getFindQuery();
+
+        const rows = await this.query<T>(query);
+        if (rows.length !== 1) {
+            throw new Error(`Not just one result found (${query}): ${rows.length}`);
+        }
+
+        return rows[0];
+    }
+
     public async update(values: IValues<T>) {
         const query = await this.getUpdateQuery(values);
 
@@ -117,6 +137,9 @@ export class Table<T> {
 
     public async query<S>(sql: string): Promise<S[]> {
         return new Promise((resolve, reject) => {
+            if (!this.pool) {
+                throw new Error('No pool defined');
+            }
             this.pool.query(sql, (err: MysqlError | null, results?: any) => {
                 if (err) {
                     throw err;
@@ -136,12 +159,20 @@ export class Table<T> {
     }
 
     private getWhereQuery() {
-        const w = this.whereCondition ? Object.keys(this.whereCondition).map(key => {
-            return `\`${key}\` ${(this.whereCondition[key] as AbstractOperator).getWhere()}`;
-        }) : [];
+        const w = Object.keys(this.whereCondition).map(key => {
+            return `\`${key}\` ${(this.whereCondition[key]).getWhere()}`;
+        });
 
         if (w.length > 0) {
             return ` WHERE ${w.join(" AND ")}`;
+        }
+
+        return '';
+    }
+
+    private getLimitQuery() {
+        if (this.resultLimit) {
+            return ` LIMIT ${this.resultLimit}`;
         }
 
         return '';

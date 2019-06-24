@@ -1,8 +1,9 @@
-import { Equal, In, Table } from 'index';
+import { Table } from 'src/Table';
+import { Equal, In } from 'src/operator';
 
 class Test {
-    name: string;
-    pass: string;
+    name?: string;
+    pass?: string;
 }
 
 class TestTable extends Table<Test> {
@@ -84,5 +85,13 @@ describe('Table', () => {
         const query = await testTable
             .getInsertQuery([{ name: 'asd', pass: 'secret' }, { name: 'asd2', pass: 'secret2' }]);
         expect(query).toEqual('INSERT INTO `test` (`name`, `pass`) VALUES ("asd", "secret"), ("asd2", "secret2");');
+    });
+    it('should generate limit', async () => {
+        const testTable = new TestTable();
+        const query = await testTable
+            .where({ name: Equal('asd') })
+            .limit(1)
+            .getFindQuery();
+        expect(query).toEqual('SELECT `*` FROM `test` WHERE `name` = "asd" LIMIT 1;');
     });
 });

@@ -2,11 +2,20 @@
   "name": "cvanoquery",
   "version": "1.0.3",
   "description": "Typescript mysql query builder with table prefix",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/cvanger/cvanoquery",
   "author": "cvanger",
   "license": "MIT",
   "private": false,
+  "keywords": [
+    "typescript",
+    "query builder",
+    "mysql",
+    "mysql query",
+    "prefix",
+    "table prefix"
+  ],
   "dependencies": {
     "@types/jest": "^24.0.15",
     "@types/mysql": "^2.15.6",
@@ -15,7 +24,8 @@
     "typescript": "^3.5.2"
   },
   "scripts": {
-    "test": "NODE_PATH=. jest"
+    "test": "NODE_PATH=. jest",
+    "build": "tsc"
   },
   "devDependencies": {
     "ts-jest": "^24.0.2"

@@ -1,8 +1,8 @@
-import { Table } from 'index';
+import { Table } from 'src/Table';
 
 class Test {
-    name: string;
-    pass: string;
+    name?: string;
+    pass?: string;
 }
 
 class TestTableWithPrefix extends Table<Test> {
