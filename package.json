@@ -1,6 +1,6 @@
 {
   "name": "cvanoquery",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Typescript mysql query builder with table prefix",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
