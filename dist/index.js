@@ -4,5 +4,6 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./src/Table"));
+__export(require("./src/Query"));
 __export(require("./src/operator/EqualOperator"));
 __export(require("./src/operator/InOperator"));
