@@ -1,7 +1,6 @@
 import { AbstractDDL } from 'src/ddl/AbstractDDL';
 
-
-type IColumns<T> = { [P in keyof T]?: AbstractDDL };
+export type IColumns<T> = { [P in keyof T]?: AbstractDDL };
 
 export function createTable<T>(tableName: string, columns: IColumns<T>) {
     const c = [];
