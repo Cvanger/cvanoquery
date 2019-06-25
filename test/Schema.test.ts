@@ -1,97 +1,36 @@
-import { Table } from 'src/Table';
-import { Equal, In } from 'src/operator';
+import { createTable } from 'src/Schema';
+import { primaryKey } from 'src/ddl/PrimaryKeyDDL';
+import { varchar } from 'src/ddl/VarcharDDL';
+import { date } from 'src/ddl/DateDDL';
+import { enumField } from 'src/ddl/EnumDDL';
 
-class Test {
-    name?: string;
-    pass?: string;
+enum ChampionshipStatus {
+    active = "active",
+    inactive = "inactive"
 }
 
-class TestTable extends Table<Test> {
-    protected tableName = 'test';
+class Championship {
+    public id: number;
+
+    public name: string;
+
+    public date: Date;
+
+    public status: ChampionshipStatus;
+
+    public prefix: string;
 }
 
-describe('Table', () => {
-    it('should generate simple select', async () => {
-        const testTable = new TestTable();
-        const query = await testTable.select().getFindQuery();
-        expect(query).toEqual('SELECT `*` FROM `test`;');
-    });
-    it('should generate select with columns', async () => {
-        const testTable = new TestTable();
-        const query = await testTable.select(['name']).getFindQuery();
-        expect(query).toEqual('SELECT `name` FROM `test`;');
-    });
-    it('should generate in select', async () => {
-        const testTable = new TestTable();
-        const query = await testTable.select(['name']).where({ name: In(['a', 'b']) }).getFindQuery();
-        expect(query).toEqual('SELECT `name` FROM `test` WHERE `name` IN ("a", "b");');
-    });
-    it('should generate equal select', async () => {
-        const testTable = new TestTable();
-        const query = await testTable
-            .select(['name'])
-            .where({
-                name: Equal('b')
-            })
-            .getFindQuery();
-        expect(query).toEqual('SELECT `name` FROM `test` WHERE `name` = "b";');
-    });
-    it('should generate mixed where', async () => {
-        const testTable = new TestTable();
-        const query = await testTable
-            .select(['name'])
-            .where({
-                name: Equal('b'),
-                pass: In([1, 2])
-            })
-            .getFindQuery();
-        expect(query).toEqual('SELECT `name` FROM `test` WHERE `name` = "b" AND `pass` IN (1, 2);');
-    });
-    it('should generate simple update', async () => {
-        const testTable = new TestTable();
-        const query = await testTable
-            .getUpdateQuery({ name: 'a' });
-        expect(query).toEqual('UPDATE `test` SET `name` = "a";');
-    });
-    it('should generate update with where', async () => {
-        const testTable = new TestTable();
-        const query = await testTable
-            .where({ name: Equal('b') })
-            .getUpdateQuery({ name: 'a' });
-        expect(query).toEqual('UPDATE `test` SET `name` = "a" WHERE `name` = "b";');
-    });
-    it('should generate simple delete', async () => {
-        const testTable = new TestTable();
-        const query = await testTable
-            .where({ name: Equal('b') })
-            .getDeleteQuery();
-        expect(query).toEqual('DELETE FROM `test` WHERE `name` = "b";');
-    });
-    it('should generate complex delete', async () => {
-        const testTable = new TestTable();
-        const query = await testTable
-            .where({ name: Equal('b'), pass: In([2, 3]) })
-            .getDeleteQuery();
-        expect(query).toEqual('DELETE FROM `test` WHERE `name` = "b" AND `pass` IN (2, 3);');
-    });
-    it('should generate simple insert', async () => {
-        const testTable = new TestTable();
-        const query = await testTable
-            .getInsertQuery([{ name: 'asd', pass: 'secret' }]);
-        expect(query).toEqual('INSERT INTO `test` (`name`, `pass`) VALUES ("asd", "secret");');
-    });
-    it('should generate multi insert', async () => {
-        const testTable = new TestTable();
-        const query = await testTable
-            .getInsertQuery([{ name: 'asd', pass: 'secret' }, { name: 'asd2', pass: 'secret2' }]);
-        expect(query).toEqual('INSERT INTO `test` (`name`, `pass`) VALUES ("asd", "secret"), ("asd2", "secret2");');
-    });
-    it('should generate limit', async () => {
-        const testTable = new TestTable();
-        const query = await testTable
-            .where({ name: Equal('asd') })
-            .limit(1)
-            .getFindQuery();
-        expect(query).toEqual('SELECT `*` FROM `test` WHERE `name` = "asd" LIMIT 1;');
+
+describe('Schema', () => {
+    it('should create table', async () => {
+        const query = createTable<Championship>('championship', {
+            id: primaryKey(),
+            name: varchar().notNull(),
+            date: date(),
+            status: enumField(Object.keys(ChampionshipStatus)),
+            prefix: varchar(),
+        });
+        expect(query).toEqual('CREATE TABLE `championship` (`id` int(11) AUTO_INCREMENT NOT NULL, PRIMARY KEY (`id`), `name` varchar (255) NOT NULL, `date` date, `status` enum(\'active\', \'inactive\'), `prefix` varchar (255));');
     });
 });
