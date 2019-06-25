@@ -146,7 +146,7 @@ export class Table<T> {
             }
             this.pool.query(sql, (err: MysqlError | null, results?: any) => {
                 if (err) {
-                    throw err;
+                    reject(err);
                 }
                 resolve(results);
             });
