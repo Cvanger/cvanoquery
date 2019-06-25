@@ -247,7 +247,7 @@ var Table = /** @class */ (function () {
                         }
                         _this.pool.query(sql, function (err, results) {
                             if (err) {
-                                throw err;
+                                reject(err);
                             }
                             resolve(results);
                         });
