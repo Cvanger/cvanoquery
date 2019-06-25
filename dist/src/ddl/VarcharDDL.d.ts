@@ -1,4 +1,4 @@
-import { AbstractDDL } from 'src/ddl/AbstractDDL';
+import { AbstractDDL } from './AbstractDDL';
 declare class VarcharDDL extends AbstractDDL {
     getDDL(key: string): string[];
 }

@@ -1,4 +1,4 @@
-import { AbstractDDL } from 'src/ddl/AbstractDDL';
+import { AbstractDDL } from './AbstractDDL';
 declare class PrimaryKeyDDL extends AbstractDDL {
     getDDL(key: string): string[];
 }

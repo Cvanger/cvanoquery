@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var AbstractDDL_1 = require("src/ddl/AbstractDDL");
+var AbstractDDL_1 = require("./AbstractDDL");
 var DateDDL = /** @class */ (function (_super) {
     __extends(DateDDL, _super);
     function DateDDL() {

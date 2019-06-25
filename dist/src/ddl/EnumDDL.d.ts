@@ -1,4 +1,4 @@
-import { AbstractDDL } from 'src/ddl/AbstractDDL';
+import { AbstractDDL } from './AbstractDDL';
 declare type IEnums = string[];
 declare class EnumDDL extends AbstractDDL {
     private enums;

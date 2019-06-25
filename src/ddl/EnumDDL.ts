@@ -1,4 +1,4 @@
-import { AbstractDDL } from 'src/ddl/AbstractDDL';
+import { AbstractDDL } from './AbstractDDL';
 
 type IEnums = string[];
 
